@@ -1,0 +1,91 @@
+# =============================================================================
+# Automated LLM Fine-Tuning (SFT & DPO) & Technical Proposal Generation Pipeline
+# -----------------------------------------------------------------------------
+# Central hyperparameter registry. Every value is validated by src/config_loader.py
+# using Pydantic v2 before any training or inference begins.
+# =============================================================================
+
+model:
+  # Open-weight instruction-tuned models quantized to 4-bit via Unsloth.
+  # Swap to "unsloth/Mistral-7B-Instruct-v0.3-bnb-4bit" for smaller VRAM budgets.
+  name: unsloth/Meta-Llama-3.1-8B-Instruct-bnb-4bit
+  base_model: unsloth/Meta-Llama-3.1-8B-Instruct-bnb-4bit
+  max_seq_length: 2048
+  load_in_4bit: true
+  dtype: null                    # "auto" -> bfloat16 on Ampere+, float16 otherwise
+  attn_implementation: flash_attention_2
+  use_gradient_checkpointing: unpaged_8bit
+
+execution:
+  # mode: auto | gpu | cpu_demo
+  #   auto     -> detect torch.cuda.is_available() at runtime
+  #   gpu      -> force real Unsloth 4-bit QLoRA training (requires Linux + CUDA)
+  #   cpu_demo -> force hardware-demo simulation (runs end-to-end on any laptop)
+  mode: auto
+  device: auto
+  seed: 42
+  dry_run_steps: 12              # number of simulated optimizer steps in demo mode
+
+lora:
+  r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  bias: none
+  use_rslora: false
+  loftq_config: null
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  modules_to_save:
+    - lm_head
+    - embed_tokens
+
+sft:
+  trainer: unsloth               # unsloth | hf  (unsloth wraps TRL SFTTrainer)
+  learning_rate: 2.0e-4
+  lr_scheduler_type: linear
+  warmup_ratio: 0.03
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 4
+  num_train_epochs: 3
+  max_grad_norm: 0.3
+  weight_decay: 0.01
+  optim: adamw_8bit
+  logging_steps: 1
+  save_steps: 100
+  packing: false
+  use_chat_template: true
+
+dpo:
+  beta: 0.1
+  loss_type: sigmoid
+  learning_rate: 5.0e-5
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 4
+  num_train_epochs: 1
+  max_length: 1024
+  max_prompt_length: 512
+  temperature: 0.1
+  lr_scheduler_type: cosine
+  optim: adamw_8bit
+  logging_steps: 1
+
+inference:
+  max_new_tokens: 1024
+  temperature: 0.7
+  top_p: 0.9
+  repetition_penalty: 1.1
+  do_sample: true
+  # backend: auto | local | openai_compatible | deterministic
+  backend: auto
+
+output:
+  dir: outputs
+  sft_lora_name: lora-sft-adapter
+  dpo_lora_name: lora-dpo-adapter
+  dataset_dir: outputs/datasets

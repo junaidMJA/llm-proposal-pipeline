@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Proposal Pipeline — Prototype</title>
+  <meta name="description" content="A functional prototype that drafts architecture-first technical proposals from a job posting. Offline and deterministic — nothing is stored or sent anywhere." />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="masthead">
+    <div class="container masthead__inner">
+      <div class="brand">
+        <span class="brand__mark" aria-hidden="true">◆</span>
+        <span class="brand__name">Proposal <em>Pipeline</em></span>
+      </div>
+      <div class="status" aria-live="polite">
+        <span class="status__dot" aria-hidden="true"></span>
+        <span id="status-text">checking model…</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="intro">
+      <h1>Write a technical proposal from a job posting.</h1>
+      <p class="lede">
+        A focused proof-of-concept for the <span class="serif">SFT&nbsp;+&nbsp;DPO</span>
+        alignment pipeline. Enter a role and a short brief, and the engine drafts an
+        architecture-first proposal — hook, system design, milestones, and timeline.
+      </p>
+    </div>
+
+    <aside class="notice">
+      <span class="notice__label">Prototype</span>
+      <span class="notice__text">
+        This is a live demo running an <strong>offline, deterministic</strong> engine.
+        No model weights are downloaded, and nothing you type is stored or sent anywhere.
+      </span>
+    </aside>
+
+    <div class="workspace">
+      <section class="panel" aria-label="Job posting form">
+        <h2 class="panel__title">Job posting</h2>
+        <form id="job-form" autocomplete="off" novalidate>
+          <div class="field">
+            <label for="title">Role / title <span class="req" aria-hidden="true">*</span></label>
+            <input id="title" name="title" type="text" placeholder="Senior Full-Stack Engineer — Geospatial Platform" required />
+          </div>
+
+          <div class="field">
+            <label for="company">Company</label>
+            <input id="company" name="company" type="text" placeholder="GeoInsight Analytics" />
+          </div>
+
+          <div class="field">
+            <label for="description">Description <span class="req" aria-hidden="true">*</span></label>
+            <textarea id="description" name="description" rows="6" placeholder="Describe the project, the current stack, and the bottleneck you need solved." required></textarea>
+          </div>
+
+          <div class="field">
+            <label for="tech_stack">Tech stack <span class="req" aria-hidden="true">*</span></label>
+            <input id="tech_stack" name="tech_stack" type="text" placeholder="Next.js, Node.js, PostgreSQL, PostGIS, Redis" required />
+            <span class="hint">Comma-separated list.</span>
+          </div>
+
+          <div class="grid grid--2">
+            <div class="field">
+              <label for="domain">Domain</label>
+              <input id="domain" name="domain" type="text" placeholder="Geospatial Analytics" />
+            </div>
+            <div class="field">
+              <label for="timeline">Timeline</label>
+              <input id="timeline" name="timeline" type="text" placeholder="16 weeks" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="budget">Budget</label>
+            <input id="budget" name="budget" type="text" placeholder="e.g. $90k–$120k" />
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn btn--primary" id="submit">Generate proposal</button>
+            <button type="button" class="btn btn--ghost" id="load-example">Load example</button>
+            <button type="button" class="btn btn--ghost btn--quiet" id="clear">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" aria-label="Generated proposal">
+        <h2 class="panel__title">Proposal</h2>
+        <div id="output" class="output">
+          <div class="output__empty">
+            <span class="output__empty-mark" aria-hidden="true">¶</span>
+            <p>The generated proposal will appear here.</p>
+            <p class="muted">Fill the form and press “Generate proposal”.</p>
+          </div>
+        </div>
+        <div id="meta" class="meta" hidden></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="container footer">
+    <span>Prototype — local inference &middot; deterministic engine &middot; no data stored.</span>
+    <span class="muted">Status is read from <code>/health</code> on load.</span>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
