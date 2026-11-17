@@ -15,6 +15,7 @@ Optimization).
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![CI](https://github.com/junaidMJA/llm-proposal-pipeline/actions/workflows/ci.yml/badge.svg)
 [![Container](https://img.shields.io/badge/Container-ghcr.io-blue)](https://github.com/junaidMJA/llm-proposal-pipeline/pkgs/container/llm-proposal-pipeline)
+[![Live demo](https://img.shields.io/badge/Live_demo-onrender.com-46ac74)](https://llm-proposal-pipeline.onrender.com/)
 
 </div>
 
@@ -169,8 +170,10 @@ Environment variables:
 
 ## Web Prototype (Demo UI)
 
+**Live demo:** [llm-proposal-pipeline.onrender.com](https://llm-proposal-pipeline.onrender.com/)
+
 A minimal, dependency-free web interface is served by the FastAPI app at
-`http://localhost:8000/`:
+`http://localhost:8000/` (and hosted live on Render):
 
 ```bash
 uvicorn src.api:app --reload
@@ -227,6 +230,8 @@ Google Cloud Run, Hugging Face Spaces). The image now honors the platform's
 Optional: add `LLM_API_KEY` (e.g. OpenRouter) as an environment secret to switch
 the `/api/v1/generate-proposal` endpoint from the deterministic engine to a real
 hosted LLM.
+
+**Currently live at:** [llm-proposal-pipeline.onrender.com](https://llm-proposal-pipeline.onrender.com/)
 
 ## REST API
 
